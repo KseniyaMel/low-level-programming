@@ -1,4 +1,3 @@
-
 global exit
 global string_length
 global print_string
@@ -57,25 +56,25 @@ print_newline:
 
 print_uint:
 	xor rax, rax
-  xor rcx, rcx
-  mov rax, rdi
-  mov rdi, 10
-  push 0x00
+  	xor rcx, rcx
+  	mov rax, rdi
+  	mov rdi, 10
+  	push 0x00
 .loop:
-  xor rdx, rdx
-  div rdi
-  add rdx, '0'
-  push rdx
-  test rax, rax
-  jnz .loop
+  	xor rdx, rdx
+  	div rdi
+  	add rdx, '0'
+  	push rdx
+  	test rax, rax
+  	jnz .loop
 .out:
-  pop rdi
-  cmp rdi, 0x00
-  je .exit
-  call print_char
-  jmp .out
+ 	pop rdi
+	cmp rdi, 0x00
+	je .exit
+	call print_char
+	jmp .out
 .exit:
-  ret
+ 	ret
   
 print_int:
 	test rdi, rdi
@@ -143,18 +142,18 @@ read_word:
 	ret
 
 string_equals:
-  push rdi
-  push rsi
+  	push rdi
+  	push rsi
 	call string_length
 	pop rsi
-  pop rdi
-  mov rcx, rax
+  	pop rdi
+  	mov rcx, rax
 	push rdi
-  push rsi
+  	push rsi
 	mov rdi, rsi
 	call string_length
 	pop rsi
-  pop rdi
+  	pop rdi
 	cmp rcx, rax
 	js .not
 	cld
@@ -193,9 +192,9 @@ parse_uint:
 
 .loop2:
 	cmp byte[rdi+r9], 48
-  jb .no
-  cmp byte[rdi+r9], 57
-  ja .no
+  	jb .no
+  	cmp byte[rdi+r9], 57
+  	ja .no
 	xor rdx, rdx
 	mul rcx
 	mov r8b, byte[rdi+r9]
@@ -222,6 +221,6 @@ parse_int:
 	jne parse_uint
 	inc rdi
 	call parse_uint
-  inc rdx
-  neg rax
-  ret
+  	inc rdx
+  	neg rax
+  	ret
