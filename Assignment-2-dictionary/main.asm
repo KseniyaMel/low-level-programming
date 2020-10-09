@@ -43,11 +43,11 @@ _start:
 
 .fail1:
 	mov rdi, m_fail1
-	call print_string
+	call print_err
 	call exit
 	
 .fail2:
 	mov rdi, m_fail2
-	call print_string
+	call print_err
 	call exit
 	
