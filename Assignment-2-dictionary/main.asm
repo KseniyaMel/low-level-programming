@@ -1,11 +1,12 @@
 %include "words.inc"
 
+
 global _start
-extern read_word
-extern string_lenght
-extern print_string
-extern exit
 extern find_word
+extern string_length
+extern print_string
+extern read_word
+extern exit
 
 section .data
 	m_fail1: db 'The word is too long', 0
@@ -28,14 +29,14 @@ _start:
 	test rax, rax
 	jz .fail1
 	
-	mov rdi, last
-	mov rsi, rax
+	mov rdi, rax
+	mov rsi, last
 	call find_word
 	test rax, rax
 	jz .fail2
-	
-	lea rdi, [rax + 8]
-	call string_lenght
+
+	lea rdi, [rax+8]	
+	call string_length
 	add rdi, rax	
 	inc rdi
 	call print_string
@@ -43,11 +44,11 @@ _start:
 
 .fail1:
 	mov rdi, m_fail1
-	call print_err
+	call print_string
 	call exit
 	
 .fail2:
 	mov rdi, m_fail2
-	call print_err
+	call print_string
 	call exit
 	

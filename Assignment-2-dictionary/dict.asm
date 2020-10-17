@@ -6,17 +6,22 @@ find_word:
 	xor rax, rax
 .loop:
 	test rsi, rsi
-	jz .end
+	jz .no
 	
 	push rdi
+	push rsi
 	add rsi, 8
-	call sring_equals
+	call string_equals
+	pop rsi
 	pop rdi
 	test rax, rax
-	jnz .end
+	jnz .yes
 
-	mov rsi, [rsi-8]
+	mov rsi, [rsi]
 	jmp .loop
-.end:
+.no:
+	xor rax, rax
+	ret
+.yes:
 	mov rax, rsi
 	ret

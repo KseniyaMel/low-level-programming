@@ -1,6 +1,6 @@
 %define last 0
 
-%macro colomn 2
+%macro colon 2
 %2:
 	dq last
 	db %1, 0
