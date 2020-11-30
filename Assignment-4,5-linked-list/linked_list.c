@@ -1,5 +1,7 @@
-#include <stdlib.h>
+
 #include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
 #include <malloc.h>
 
 #include "linked_list.h"
@@ -13,27 +15,27 @@ l_list* list_create(int val) {
 
 l_list* list_add_front(int value, l_list** m_list) 
 {
-	l_list* list = list_create(value);
-
+	l_list *list = list_create(value);
 	list->next = *m_list;
 	*m_list = list;
+
 	return list;
 }
 
 l_list* list_add_back(int value, l_list** m_list) 
 {
 	l_list* count = *m_list;
-
-	for (;;)
+	
+	if (*m_list == NULL)
 	{
-		if (count->next == NULL) break;
-		count = count->next;
+		*m_list = count;
+	} else {
+		l_list *iter = *m_list;
+		while(iter->next !=NULL) iter = iter->next;
+		iter->next = count;
 	}
 
-	l_list* list = list_create(value);
-
-	count->next = list;
-	return list;
+	return count;
 }
 
 l_list* list_add_after(l_list* node, int value) 
@@ -100,12 +102,11 @@ void list_free(l_list* list)
 
 int list_lenght(l_list* list) 
 {
+	l_list* count;
 	int len = 0;
 
-	if (list->value != NULL) len = 1;
-
-	for (l_list* count = list; count->next != NULL; count = count->next)
-		len += 1;
+	for (count = list; count != NULL; count = count->next)
+		++len;
 
 	return len;
 }
@@ -115,7 +116,7 @@ int list_sum(l_list* list)
 	l_list* count = list;
 	int sum = 0;
 
-	if (count->value == NULL) return sum;
+	if (count == NULL) return sum;
 
 	for (;;)
 	{

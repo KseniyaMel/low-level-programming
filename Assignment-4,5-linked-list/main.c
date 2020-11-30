@@ -71,7 +71,7 @@ static void lower_checks(l_list** list)
     size_t index = 4;
 
     puts("--- Basic functions test ---");
-    printf("List sum: %ld\n", list_sum(*list));
+    printf("List sum: %d\n", list_sum(*list));
 
     errno = 0;
     value = list_get(*list, index);
