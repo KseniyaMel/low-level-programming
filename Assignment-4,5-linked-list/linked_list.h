@@ -1,6 +1,3 @@
-#ifndef _LINKED_LIST_H_
-#define _LINKED_LIST_H_
-
 #include <stdlib.h>
 
 struct l_list {
@@ -33,5 +30,3 @@ int save(l_list* list, const char* filename);
 int load(l_list** list, const char* filename);
 int serialize(l_list* list, const char* filename);
 int deserialize(l_list** list, const char* filename);
-
-#endif

@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -128,12 +127,12 @@ int list_sum(l_list* list)
 	return sum;
 }
 
-void foreach(l_list* list, void (*consumer)(int)) 
+void foreach(l_list* list, void (*procedure)(int)) 
 {
 	l_list* count;
 
 	for (count = list; count != NULL; count = count->next)
-		consumer(count->value);
+		procedure(count->value);
 }
 
 l_list* map(l_list* list, int (*operator)(int)) 
@@ -174,15 +173,15 @@ int foldl(l_list* list, int acc, int (*operator)(int, int))
 l_list* iterate(int value, size_t length, int (*operator)(int)) 
 {
     size_t i;
-    l_list* start, * iter;
+    l_list* start, * count;
 
     start = list_create(value);
-    iter = start;
+    count = start;
 
     for (i = 1; i < length; i++) 
     {
         value = operator(value);
-        iter = list_add_after(iter, value);
+        count = list_add_after(count, value);
     }
 
     return start;
@@ -190,16 +189,16 @@ l_list* iterate(int value, size_t length, int (*operator)(int))
 
 int save(l_list* list, const char* filename) 
 {
-    l_list* iter;
+    l_list* count;
 
     FILE* f;
     errno = 0;
     f = fopen(filename, "w");
     if (errno) return 0;
 
-    for (iter = list; iter != NULL; iter = iter->next) 
+    for (count = list; count != NULL; count = count->next) 
     {
-        fprintf(f, "%d ", iter->value);
+        fprintf(f, "%d ", count->value);
 
         if (errno || ferror(f)) 
         {
@@ -216,7 +215,7 @@ int save(l_list* list, const char* filename)
 
 int load(l_list** list, const char* filename) 
 {
-    l_list* iter = NULL, * start = NULL;
+    l_list* count = NULL, * start = NULL;
     int value;
 
     FILE* f;
@@ -224,7 +223,7 @@ int load(l_list** list, const char* filename)
     f = fopen(filename, "r");
     if (errno) return 0;
 
-    while (1) 
+    for(;;)
     {
         fscanf(f, "%d", &value);
 
@@ -236,9 +235,9 @@ int load(l_list** list, const char* filename)
             return 0;
         }
 
-        iter = list_add_after(iter, value);
+        count = list_add_after(count, value);
 
-        if (start == NULL) start = iter;
+        if (start == NULL) start = count;
     }
 
     *list = start;

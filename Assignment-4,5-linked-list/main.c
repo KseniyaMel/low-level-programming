@@ -4,6 +4,31 @@
 
 #include "linked_list.h"
 
+static int sum(int value, int acc)
+{
+    return value + acc;
+}
+
+static int max(int value, int max)
+{
+    return value > max ? value : max;
+}
+
+static int min(int value, int min)
+{
+    return value < min ? value : min;
+}
+
+static int mod(int value)
+{
+    return value > 0 ? value : -value;
+}
+
+static int twice(int value)
+{
+    return value * 2;
+}
+
 static void print_int(int value) 
 {
     printf("%d ", value);
@@ -40,40 +65,17 @@ static int cube(int value)
     return value * value * value;
 }
 
-static int sum(int value, int acc) 
+static void functional_checks(l_list** list) 
 {
-    return value + acc;
-}
+    puts("--- functional_checks ---");
 
-static int max(int value, int max) 
-{
-    return value > max ? value : max;
-}
-
-static int min(int value, int min) 
-{
-    return value < min ? value : min;
-}
-
-static int mod(int value) 
-{
-    return value > 0 ? value : -value;
-}
-
-static int twice(int value) 
-{
-    return value * 2;
-}
-
-static void lower_checks(l_list** list) 
-{
-    int value;
-    size_t index = 4;
-
-    puts("--- Basic functions test ---");
+    printf("Lenght of list: %d\n", list_lenght(*list));
     printf("List sum: %d\n", list_sum(*list));
 
     errno = 0;
+    int value;
+    size_t index = 3;
+
     value = list_get(*list, index);
 
     if (errno) 
@@ -82,52 +84,66 @@ static void lower_checks(l_list** list)
     }
     else 
     {
-        printf("Value of element at index %lu is %d\n", index, value);
+        printf("Value of element at index %lu is '%d\n'", index, value);
     }
 }
 
-static void higher_checks(l_list** list) 
+static void functionalOfHighOrder_checks(l_list** list) 
 {
+    puts("--- functionalOfHighOrder_checks ---");
+
     l_list* new_start = NULL;
     l_list** new_list;
 
-    puts("\n--- foreach test ---");
+    puts("foreach test:");
 
-    foreach(*list, print_int); puts("");
+    foreach(*list, print_int);
+    puts("");
+
     foreach(*list, println_int);
 
-    puts("\n--- map test ---");
+    puts("map test:");
 
     new_start = map(*list, square);
-    foreach(new_start, print_int); puts("");
+    foreach(new_start, print_int);
+    puts("");
+
     list_free(new_start);
 
     new_start = map(*list, cube);
-    foreach(new_start, print_int); puts("");
+    foreach(new_start, print_int);
+    puts("");
 
-    puts("\n--- foldl test ---");
-    printf("Sum: %d\n", foldl(*list, 0, sum));
-    printf("Max: %d\n", foldl(*list, INT_MIN, max));
-    printf("Min: %d\n", foldl(*list, INT_MAX, min));
+    puts("foldl test:");
 
-    puts("\n--- map_mut test ---");
+    printf("Sum = %d\n", foldl(*list, 0, sum));
+    printf("Max = %d\n", foldl(*list, INT_MIN, max));
+    printf("Min = %d\n", foldl(*list, INT_MAX, min));
+
+    puts("map_mut test:");
+
     new_list = &new_start;
     map_mut(new_list, mod);
-    foreach(*new_list, print_int); puts("");
+    foreach(*new_list, print_int);
+    puts("");
+
     list_free(*new_list);
 
-    puts("\n--- iterate test ---");
+    puts("iterate test:");
+
     new_start = iterate(1, 10, twice);
-    foreach(new_start, print_int); puts("");
+    foreach(new_start, print_int);
+    puts("");
+
     list_free(new_start);
 }
 
 static void file_checks(l_list** list) 
 {
+    puts("--- file_checks ---");
+        
     l_list* new_iter = NULL;
     l_list** new_list = &new_iter;
-
-    puts("\n--- save/load test ---");
 
     if (!save(*list, "list.txt")) 
     {
@@ -147,7 +163,7 @@ static void file_checks(l_list** list)
 
     list_free(*new_list);
 
-    puts("\n--- serialize/deserialize test ---");
+    puts("--- serialize/deserialize test ---");
 
     if (!serialize(*list, "list.bin")) 
     {
@@ -162,8 +178,11 @@ static void file_checks(l_list** list)
         return;
     }
 
-    foreach(*list, print_int); puts("");
-    foreach(*new_list, print_int); puts("");
+    foreach(*list, print_int); 
+    puts("");
+
+    foreach(*new_list, print_int);
+    puts("");
 
     list_free(*new_list);
 }
@@ -181,8 +200,9 @@ static void file_checks(l_list** list)
         list_add_front(value, list);
     }
 
-    lower_checks(list);
-    higher_checks(list);
+    functional_checks(list);
+    functionalOfHighOrder_checks(list);
+
     file_checks(list);
 
     list_free(*list);

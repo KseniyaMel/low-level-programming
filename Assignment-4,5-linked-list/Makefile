@@ -18,7 +18,6 @@ $(NAME): $(OBJECTS)
 
 linked_list.c: linked_list.h
 main.c: linked_list.h
-bi_linked_list.c: bi_linked_list.h
 
 TMP_FILES := list.txt list.bin
 
