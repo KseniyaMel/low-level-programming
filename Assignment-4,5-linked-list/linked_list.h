@@ -1,32 +1,34 @@
 #include <stdlib.h>
 
 struct l_list {
-	int value;
+	__int32_t value;
 	struct l_list *next;
 };
 
-typedef struct l_list l_list;
 
-l_list *list_create(int val);
-l_list *list_add_front(int value, l_list **m_list);
-l_list* list_add_back(int value, l_list** m_list);
+struct l_list *list_create(__int32_t  val);
+struct l_list *list_add_front(struct l_list** m_list, __int32_t value);
+struct l_list* list_add_back(struct l_list** m_list, __int32_t value);
 
-l_list* list_add_after(l_list* node, int value);
+struct l_list* list_add_after(struct l_list* node, __int32_t value);
 
-l_list* list_node_at(int index, l_list* list);
-int list_get(l_list* list,int index);
-void list_free(l_list* list);
-int list_lenght(l_list* list);
-int list_sum(l_list* list);
+struct l_list* list_node_at(struct l_list* list, size_t index);
+__int32_t list_get(struct l_list* list, size_t index);
+void list_free(struct l_list* list);
+size_t list_lenght(struct l_list* list);
+__int32_t list_sum(struct l_list* list);
 
-void foreach(l_list* list, void (*consumer)(int));
-l_list* map(l_list* list, int (*operator)(int));
-l_list* map_mut(l_list** list, int (*operator)(int));
+void foreach(struct l_list* list, void (*consumer)(__int32_t));
+struct l_list* map(struct l_list* list, __int32_t (*operator)(__int32_t));
+struct l_list* map_mut(struct l_list** list, __int32_t (*operator)(__int32_t));
 
 
-int foldl(l_list* list, int acc, int (*operator)(int, int));
-l_list* iterate(int value, size_t length, int (*operator)(int));
-int save(l_list* list, const char* filename);
-int load(l_list** list, const char* filename);
-int serialize(l_list* list, const char* filename);
-int deserialize(l_list** list, const char* filename);
+__int32_t foldl(struct l_list* list, __int32_t acc, __int32_t (*operator)(__int32_t, __int32_t));
+struct l_list* iterate(__int32_t value, size_t length, __int32_t (*operator)(__int32_t));
+__int32_t save(struct l_list* list, const char* filename);
+__int32_t load(struct l_list** list, const char* filename);
+__int32_t serialize(struct l_list* list, const char* filename);
+__int32_t deserialize(struct l_list** list, const char* filename);
+FILE* fileOpen(const char* filename, const char* mode);
+void fileClose(FILE* f);
+__int32_t fileEOF(FILE* f);

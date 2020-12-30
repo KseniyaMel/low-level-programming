@@ -1,45 +1,68 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <malloc.h>
+#include <stdbool.h>
 
 #include "linked_list.h"
 
-l_list* list_create(int val) {
-	l_list* list = malloc(sizeof(l_list));
+static void shift(struct l_list* iter)
+{
+    while (iter->next != NULL) iter = iter->next;
+}
+
+static size_t index_shift(struct l_list* count, size_t index)
+{
+    size_t i = 0;
+
+    while (count->next != NULL)
+    {
+        if (index == i) break;
+
+        count = count->next;
+        i += 1;
+    }
+
+    return i;
+}
+
+struct l_list* list_create(__int32_t val) 
+{
+
+	struct l_list* list = malloc(sizeof(struct l_list));
 	list->value = val;
 	list->next = NULL;
 	return list;
+
 }
 
-l_list* list_add_front(int value, l_list** m_list) 
+struct l_list* list_add_front(struct l_list** m_list, __int32_t value)
 {
-	l_list *list = list_create(value);
+    	struct l_list *list = list_create(value);
 	list->next = *m_list;
 	*m_list = list;
 
 	return list;
 }
 
-l_list* list_add_back(int value, l_list** m_list) 
+struct l_list* list_add_back(struct l_list** m_list, __int32_t value)
 {
-	l_list* count = *m_list;
+    struct l_list* count = *m_list;
 	
 	if (*m_list == NULL)
 	{
 		*m_list = count;
 	} else {
-		l_list *iter = *m_list;
-		while(iter->next !=NULL) iter = iter->next;
+        struct l_list *iter = *m_list;
+        shift(iter);
 		iter->next = count;
 	}
 
 	return count;
 }
 
-l_list* list_add_after(l_list* node, int value) 
+struct l_list* list_add_after(struct l_list* node, __int32_t value)
 {
-    l_list* new_node = list_create(value);
+    struct l_list* new_node = list_create(value);
 
     if (node != NULL) 
     {
@@ -50,59 +73,44 @@ l_list* list_add_after(l_list* node, int value)
     return new_node;
 }
 
-
-l_list* list_node_at(int index, l_list* list)
+struct l_list* list_node_at(struct l_list* list, size_t index)
 {
-	l_list* count = list;
-	int i = 0;
+    struct l_list* count = list;
 
-	while (count->next != NULL) 
-    {
-		if (index == i) break;
-
-		count = count->next;
-		i += 1;
-	}
+    size_t i = index_shift(count, index);
 
 	if (index != i) return 0;
 
 	return count;
 }
 
-
-int list_get(l_list* list, int index)
+__int32_t list_get(struct l_list* list, size_t index)
 {
-	l_list* count = list;
-	int i = 0;
+    struct l_list* count = list;
 
-	while (count->next != NULL) 
-    {
-		if (index == i) break;
-
-		count = count->next;
-		i += 1;
-	}
+    size_t i = index_shift(count, index);
 
 	if (index != i) return 0;
 
 	return count->value;
 }
 
-void list_free(l_list* list) 
+void list_free(struct l_list* list)
 {
 	while (list->next != NULL) 
     {
-		l_list* died = list;
+        struct l_list* died = list;
 		list = list->next;
 
 		free(died);
 	}
 }
 
-int list_lenght(l_list* list) 
+
+size_t list_lenght(struct l_list* list)
 {
-	l_list* count;
-	int len = 0;
+    struct l_list* count;
+    size_t len = 0;
 
 	for (count = list; count != NULL; count = count->next)
 		++len;
@@ -110,10 +118,10 @@ int list_lenght(l_list* list)
 	return len;
 }
 
-int list_sum(l_list* list)
+__int32_t list_sum(struct l_list* list)
 {
-	l_list* count = list;
-	int sum = 0;
+    struct l_list* count = list;
+    __int32_t sum = 0;
 
 	if (count == NULL) return sum;
 
@@ -127,17 +135,17 @@ int list_sum(l_list* list)
 	return sum;
 }
 
-void foreach(l_list* list, void (*procedure)(int)) 
+void foreach(struct l_list* list, void (*procedure)(__int32_t))
 {
-	l_list* count;
+    struct l_list* count;
 
 	for (count = list; count != NULL; count = count->next)
 		procedure(count->value);
 }
 
-l_list* map(l_list* list, int (*operator)(int)) 
+struct l_list* map(struct l_list* list, __int32_t (*operator)(__int32_t))
 {
-	l_list* count, * new_count = NULL, * start = NULL;
+    struct l_list* count, * new_count = NULL, * start = NULL;
 
 	for (count = list; count != NULL; count = count->next) 
     {
@@ -149,9 +157,9 @@ l_list* map(l_list* list, int (*operator)(int))
 	return start;
 }
 
-l_list* map_mut(l_list** list, int (*operator)(int)) 
+struct l_list* map_mut(struct l_list** list, __int32_t (*operator)(__int32_t))
 {
-	l_list* count;
+    struct l_list* count;
 
 	for (count = *list; count != NULL; count = count->next)
 		count->value = operator(count->value);
@@ -159,9 +167,9 @@ l_list* map_mut(l_list** list, int (*operator)(int))
 	return *list;
 }
 
-int foldl(l_list* list, int acc, int (*operator)(int, int)) 
+__int32_t foldl(struct l_list* list, __int32_t acc, __int32_t (*operator)(__int32_t, __int32_t))
 {
-    l_list* count;
+    struct l_list* count;
 
     for (count = list; count != NULL; count = count->next)
         acc = operator(count->value, acc);
@@ -170,10 +178,10 @@ int foldl(l_list* list, int acc, int (*operator)(int, int))
 }
 
 
-l_list* iterate(int value, size_t length, int (*operator)(int)) 
+struct l_list* iterate(__int32_t value, size_t length, __int32_t (*operator)(__int32_t))
 {
     size_t i;
-    l_list* start, * count;
+    struct l_list* start, * count;
 
     start = list_create(value);
     count = start;
@@ -187,14 +195,26 @@ l_list* iterate(int value, size_t length, int (*operator)(int))
     return start;
 }
 
-int save(l_list* list, const char* filename) 
+FILE* fileOpen(const char* filename, const char* mode)
 {
-    l_list* count;
-
     FILE* f;
-    errno = 0;
-    f = fopen(filename, "w");
-    if (errno) return 0;
+    errno = false; 
+    f = fopen(filename, mode);
+    if (errno) return NULL;
+    return f;
+}
+
+void fileClose(FILE* f)
+{
+    fclose(f);
+}
+
+__int32_t save(struct l_list* list, const char* filename)
+{
+    struct l_list* count;
+        
+    FILE* f = fileOpen(filename, "w");
+    if (f == NULL) return 0;
 
     for (count = list; count != NULL; count = count->next) 
     {
@@ -202,36 +222,39 @@ int save(l_list* list, const char* filename)
 
         if (errno || ferror(f)) 
         {
-            fclose(f);
+            fileClose(f);
             return 0;
         }
     }
 
-    fclose(f);
+    fileClose(f);
 
     if (errno) return 0;
     return 1;
 }
 
-int load(l_list** list, const char* filename) 
+__int32_t fileEOF(FILE* f)
 {
-    l_list* count = NULL, * start = NULL;
-    int value;
+    return feof(f);
+}
 
-    FILE* f;
-    errno = 0;
-    f = fopen(filename, "r");
-    if (errno) return 0;
+__int32_t load(struct l_list** list, const char* filename)
+{
+    struct l_list* count = NULL, * start = NULL;
+    __int32_t value;
+     
+    FILE* f = fileOpen(filename, "r");
+    if (f == NULL) return 0;
 
     for(;;)
     {
         fscanf(f, "%d", &value);
 
-        if (feof(f)) break;
+        if (fileEOF(f)) break;
 
         if (errno || ferror(f)) 
         {
-            fclose(f);
+            fileClose(f);
             return 0;
         }
 
@@ -241,59 +264,55 @@ int load(l_list** list, const char* filename)
     }
 
     *list = start;
-    fclose(f);
+    fileClose(f);
 
     if (errno) return 0;
     return 1;
 
 }
 
-int serialize(l_list* list, const char* filename) 
+__int32_t serialize(struct l_list* list, const char* filename)
 {
-    l_list* count;
+    struct l_list* count;
 
-    FILE* f;
-    errno = 0;
-    f = fopen(filename, "wb");
-    if (errno) return 0;
+    FILE* f = fileOpen(filename, "rb");
+    if (f == NULL) return 0;
 
     for (count = list; count != NULL; count = count->next) 
     {
-        fwrite(&count->value, sizeof(int), 1, f);
+        fwrite(&count->value, sizeof(__int32_t), 1, f);
 
         if (errno || ferror(f)) 
         {
-            fclose(f);
+            fileClose(f);
             return 0;
         }
     }
 
-    fclose(f);
+    fileClose(f);
 
     if (errno) return 0;
     return 1;
 
 }
 
-int deserialize(l_list** list, const char* filename) 
+__int32_t deserialize(struct l_list** list, const char* filename)
 {
-    l_list* count = NULL, * start = NULL;
-    int value;
+    struct l_list* count = NULL, * start = NULL;
+    __int32_t value;
 
-    FILE* f;
-    errno = 0;
-    f = fopen(filename, "r");
-    if (errno) return 0;
+    FILE* f = fileOpen(filename, "r");
+    if (f == NULL) return 0;
 
     for(;;)
     {
-        fread(&value, sizeof(int), 1, f);
+        fread(&value, sizeof(__int32_t), 1, f);
 
-        if (feof(f)) break;
+        if (fileEOF(f)) break;
 
         if (errno || ferror(f))
         {
-            fclose(f);
+            fileClose(f);
             return 0;
         }
 
@@ -303,7 +322,7 @@ int deserialize(l_list** list, const char* filename)
     }
 
     *list = start;
-    fclose(f);
+    fileClose(f);
 
     if (errno) return 0;
     return 1;

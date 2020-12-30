@@ -4,32 +4,32 @@
 
 #include "linked_list.h"
 
-static int sum(int value, int acc)
+static __int32_t sum(__int32_t value, __int32_t acc)
 {
     return value + acc;
 }
 
-static int max(int value, int max)
+static __int32_t max(__int32_t value, __int32_t max)
 {
     return value > max ? value : max;
 }
 
-static int min(int value, int min)
+static __int32_t min(__int32_t value, __int32_t min)
 {
     return value < min ? value : min;
 }
 
-static int mod(int value)
+static __int32_t mod(__int32_t value)
 {
     return value > 0 ? value : -value;
 }
 
-static int twice(int value)
+static __int32_t twice(__int32_t value)
 {
     return value * 2;
 }
 
-static void print_int(int value) 
+static void print_int(__int32_t value)
 {
     printf("%d ", value);
 }
@@ -39,9 +39,9 @@ static void println_int(int value)
     printf("%d\n", value);
 }
 
-static int square(int value)
+static __int32_t square(__int32_t value)
 {
-    int max = 1 << 16;
+    __int32_t max = 1 << 16;
 
     if (value >= max || value <= -max) 
     {
@@ -52,9 +52,9 @@ static int square(int value)
     return value * value;
 }
 
-static int cube(int value) 
+static __int32_t cube(__int32_t value)
 {
-    int max = 1 << 10;
+    __int32_t max = 1 << 10;
 
     if (value >= max || value <= -max) 
     {        
@@ -65,16 +65,17 @@ static int cube(int value)
     return value * value * value;
 }
 
-static void functional_checks(l_list** list) 
+static void functional_checks(struct l_list** list)
 {
+    __int32_t value;
+    size_t index = 3;
+
     puts("--- functional_checks ---");
 
-    printf("Lenght of list: %d\n", list_lenght(*list));
+    printf("Lenght of list: %ld\n", list_lenght(*list));
     printf("List sum: %d\n", list_sum(*list));
 
     errno = 0;
-    int value;
-    size_t index = 3;
 
     value = list_get(*list, index);
 
@@ -88,12 +89,12 @@ static void functional_checks(l_list** list)
     }
 }
 
-static void functionalOfHighOrder_checks(l_list** list) 
+static void functionalOfHighOrder_checks(struct l_list** list)
 {
-    puts("--- functionalOfHighOrder_checks ---");
+    struct l_list* new_start = NULL;
+    struct l_list** new_list;
 
-    l_list* new_start = NULL;
-    l_list** new_list;
+    puts("--- functionalOfHighOrder_checks ---");
 
     puts("foreach test:");
 
@@ -138,12 +139,12 @@ static void functionalOfHighOrder_checks(l_list** list)
     list_free(new_start);
 }
 
-static void file_checks(l_list** list) 
+static void file_checks(struct l_list** list)
 {
+    struct l_list* new_iter = NULL;        
+    struct l_list** new_list = &new_iter;
+
     puts("--- file_checks ---");
-        
-    l_list* new_iter = NULL;
-    l_list** new_list = &new_iter;
 
     if (!save(*list, "list.txt")) 
     {
@@ -189,15 +190,15 @@ static void file_checks(l_list** list)
 
  int main(void) 
  {
-    int value;
-    l_list* iter = NULL;
-    l_list** list = &iter;
+     __int32_t value;
+    struct l_list* iter = NULL;
+    struct l_list** list = &iter;
 
     for(;;)
     {
         if (!scanf("%d", &value)) break;
 
-        list_add_front(value, list);
+        list_add_front(list, value);
     }
 
     functional_checks(list);

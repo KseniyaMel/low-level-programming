@@ -5,7 +5,7 @@ SOURCES := $(wildcard *.c)
 OBJECTS := $(addsuffix .o,$(SOURCES))
 
 CC := gcc
-CFLAGS := -g -pedantic-errors -ansi
+CFLAGS := -Wall -pedantic-errors  -std=c18
 
 CWARNINGS := all error
 CFLAGS += $(addprefix -W,$(CWARNINGS))
